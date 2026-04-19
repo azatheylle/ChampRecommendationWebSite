@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Champ Counter</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header>
+        <h1>Champ Counter</h1>
+      </header>
+
+      <section class="panel">
+        <div class="control-grid">
+          <div class="field div2">
+            <p>Rank</p>
+            <input id="rank" name="rank" type="text" value="Platinum+" placeholder="All, Gold+, Platinum+, Emerald+, Diamond+, Master+" />
+          </div>
+
+          <div class="field div2">
+            <p>My Lane</p>
+            <input id="myLane" name="myLane" type="text" value="Top" placeholder="Top, Jungle, Mid, Bot, Support" />
+          </div>
+        </div>
+
+        <div class="enemy-grid">
+          <div class="field div2">
+            <p>Enemy Top</p>
+            <input id="enemy-top" data-lane="top" type="text" placeholder="e.g. Darius" autocomplete="off" />
+          </div>
+          <div class="field div2">
+            <p>Enemy Jungle</p>
+            <input id="enemy-jungle" data-lane="jungle" type="text" placeholder="e.g. LeeSin" autocomplete="off" />
+          </div>
+          <div class="field div2">
+            <p>Enemy Mid</p>
+            <input id="enemy-middle" data-lane="middle" type="text" placeholder="e.g. Ahri" autocomplete="off" />
+          </div>
+          <div class="field div2">
+            <p>Enemy Bot</p>
+            <input id="enemy-bottom" data-lane="bottom" type="text" placeholder="e.g. Caitlyn" autocomplete="off" />
+          </div>
+          <div class="field div2">
+            <p>Enemy Support</p>
+            <input id="enemy-support" data-lane="support" type="text" placeholder="e.g. Nautilus" autocomplete="off" />
+          </div>
+        </div>
+
+        <div class="actions-row">
+          <p id="estimate" class="estimate">Estimated time = 0 sec</p>
+          <button id="calculate" type="button">Calculate Counters</button>
+        </div>
+
+        <p id="status" class="status" aria-live="polite"></p>
+      </section>
+
+      <section class="panel">
+        <div class="results-header">
+          <h2>Recommendations</h2>
+        </div>
+        <ol id="results" class="results-list"></ol>
+      </section>
+    </main>
+
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
