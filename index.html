@@ -16,12 +16,25 @@
         <div class="control-grid">
           <div class="field div2">
             <p>Rank</p>
-            <input id="rank" name="rank" type="text" value="Platinum+" placeholder="All, Gold+, Platinum+, Emerald+, Diamond+, Master+" />
+            <select id="rank" name="rank">
+              <option value="All">All</option>
+              <option value="Gold+">Gold+</option>
+              <option value="Platinum+" selected>Platinum+</option>
+              <option value="Emerald+">Emerald+</option>
+              <option value="Diamond+">Diamond+</option>
+              <option value="Master+">Master+</option>
+            </select>
           </div>
 
           <div class="field div2">
             <p>My Lane</p>
-            <input id="myLane" name="myLane" type="text" value="Top" placeholder="Top, Jungle, Mid, Bot, Support" />
+            <select id="myLane" name="myLane">
+              <option value="Top" selected>Top</option>
+              <option value="Jungle">Jungle</option>
+              <option value="Mid">Mid</option>
+              <option value="Bot">Bot</option>
+              <option value="Support">Support</option>
+            </select>
           </div>
         </div>
 
