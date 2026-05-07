@@ -1,21 +1,6 @@
 import { ALL_CHAMPS } from "./champions.js";
 
-const rankMapping = {
-  "All": "tier=all",
-  "Gold+": "tier=gold_plus",
-  "Platinum+": "tier=platinum_plus",
-  "Emerald+": "tier=emerald_plus",
-  "Diamond+": "tier=diamond_plus",
-  "Master+": "tier=master_plus"
-};
-
-const laneMapping = {
-  Top: "top",
-  Jungle: "jungle",
-  Mid: "middle",
-  Bot: "bottom",
-  Support: "support"
-};
+const API_BASE_URL = "https://azatheylle.github.io/ChampRecommendationWebSite";
 
 const estimateByCount = {
   1: 8,
@@ -53,25 +38,6 @@ function normalizeChampionName(value) {
   return value.toLowerCase().replace(/[\s'.-]/g, "");
 }
 
-function normalizeRankValue(value) {
-  const cleaned = value.trim().toLowerCase().replace(/\s+/g, "");
-  if (cleaned === "gold" || cleaned === "gold+") return "Gold+";
-  if (cleaned === "platinum" || cleaned === "platinum+") return "Platinum+";
-  if (cleaned === "emerald" || cleaned === "emerald+") return "Emerald+";
-  if (cleaned === "diamond" || cleaned === "diamond+") return "Diamond+";
-  if (cleaned === "master" || cleaned === "master+") return "Master+";
-  return "All";
-}
-
-function normalizeLaneValue(value) {
-  const cleaned = value.trim().toLowerCase().replace(/\s+/g, "");
-  if (cleaned === "jungle") return "Jungle";
-  if (cleaned === "mid" || cleaned === "middle" || cleaned === "midlane") return "Mid";
-  if (cleaned === "bot" || cleaned === "bottom" || cleaned === "adc") return "Bot";
-  if (cleaned === "support" || cleaned === "supp") return "Support";
-  return "Top";
-}
-
 function validateInput(input) {
   const normalized = normalizeChampionName(input.value.trim());
   input.classList.remove("valid", "invalid");
@@ -92,20 +58,10 @@ function updateEstimate() {
 }
 
 function collectEnemyPicks() {
-  const picks = [];
+  const picks = {};
 
   inputFields.forEach((field) => {
-    const raw = field.value.trim();
-    const champion = normalizeChampionName(raw);
-
-    if (!champion) {
-      return;
-    }
-
-    picks.push({
-      lane: field.dataset.lane,
-      champion
-    });
+    picks[field.dataset.lane] = normalizeChampionName(field.value.trim());
   });
 
   return picks;
@@ -151,27 +107,10 @@ function renderResults(items) {
 }
 
 function normalizeApiResponse(data) {
-  if (Array.isArray(data?.recommendations)) {
-    return data.recommendations.map((row) => {
-      if (typeof row.playerWinRate === "number") {
-        return {
-          champion: normalizeChampionName(row.champion || "unknown"),
-          playerWinRate: row.playerWinRate
-        };
-      }
-
-      const enemyWinRate = Number(row.enemyWinRate ?? row.winRate ?? row.winrate ?? 100);
-      return {
-        champion: normalizeChampionName(row.champion || "unknown"),
-        playerWinRate: 100 - enemyWinRate
-      };
-    });
-  }
-
-  if (data && typeof data === "object") {
-    return Object.entries(data).map(([champion, enemyWinRate]) => ({
-      champion: normalizeChampionName(champion),
-      playerWinRate: 100 - Number(enemyWinRate)
+  if (Array.isArray(data?.results)) {
+    return data.results.map((row) => ({
+      champion: row.champ,
+      playerWinRate: Number(row.reversed_winrate)
     }));
   }
 
@@ -179,12 +118,9 @@ function normalizeApiResponse(data) {
 }
 
 async function fetchRecommendations(payload) {
-  const response = await fetch("/api/recommendations", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(payload)
+  const params = new URLSearchParams(payload);
+  const response = await fetch(`${API_BASE_URL}/api/recommendations?${params}`, {
+    method: "GET"
   });
 
   if (!response.ok) {
@@ -205,16 +141,16 @@ async function onCalculateClick() {
 
   const enemyPicks = collectEnemyPicks();
 
-  if (!enemyPicks.length) {
+  if (!Object.values(enemyPicks).some(Boolean)) {
     setStatus("Please enter at least one enemy champion.", true);
     renderEmptyResults();
     return;
   }
 
   const payload = {
-    rank: rankMapping[normalizeRankValue(rankSelect.value)],
-    myLane: laneMapping[normalizeLaneValue(myLaneSelect.value)],
-    enemyPicks
+    rank: rankSelect.value,
+    mylane: myLaneSelect.value,
+    ...enemyPicks
   };
 
   calculateButton.disabled = true;

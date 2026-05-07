@@ -1,4 +1,4 @@
-const API_BASE_URL = "https://YOUR-RENDER-SERVICE.onrender.com";
+const API_BASE_URL = "https://azatheylle.github.io/ChampRecommendationWebSite/";
 
 function buildQuery(params) {
   const qs = new URLSearchParams();
@@ -9,15 +9,14 @@ function buildQuery(params) {
 }
 
 async function getRecommendations() {
-  // You must map these to your actual HTML element IDs/names
-  const rank = document.getElementById("rank").value;       // "Platinum+"
-  const mylane = document.getElementById("mylane").value;   // "Top"
+  const rank = document.getElementById("rank").value;
+  const mylane = document.getElementById("myLane").value;
 
-  const top = document.getElementById("top").value;
-  const jungle = document.getElementById("jungle").value;
-  const middle = document.getElementById("middle").value;
-  const bottom = document.getElementById("bottom").value;
-  const support = document.getElementById("support").value;
+  const top = document.getElementById("enemy-top").value;
+  const jungle = document.getElementById("enemy-jungle").value;
+  const middle = document.getElementById("enemy-middle").value;
+  const bottom = document.getElementById("enemy-bottom").value;
+  const support = document.getElementById("enemy-support").value;
 
   const query = buildQuery({ rank, mylane, top, jungle, middle, bottom, support });
   const url = `${API_BASE_URL}/api/recommendations?${query}`;
@@ -56,4 +55,4 @@ async function onCalculateClick() {
 }
 
 // Hook button click (change ID to match your HTML)
-document.getElementById("calculateBtn").addEventListener("click", onCalculateClick);
+document.getElementById("calculate").addEventListener("click", onCalculateClick);
