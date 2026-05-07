@@ -1,6 +1,6 @@
 import { ALL_CHAMPS } from "./champions.js";
 
-const API_BASE_URL = "https://azatheylle.github.io/ChampRecommendationWebSite";
+const API_BASE_URL = "https://champrecommendationsite.onrender.com";
 
 const estimateByCount = {
   1: 8,
